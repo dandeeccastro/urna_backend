@@ -1,6 +1,6 @@
 <?php 
 
-/*!
+/**
  * Função para gerar o caminho de uma classe incluida em qualquer arquivo php. 
  * Usando o nome da classe, ela gera o caminho do arquivo no sistema de arquivos 
  * do projeto.
@@ -17,7 +17,7 @@ function getIncludePath($className) {
    else return $className . '.php';
 }
 
-/*!
+/**
  * Função para dinamicamente incluir classes chamadas no código.
  * Em qualquer chamada a new, ela pega o nome da classe e chama include_once
  * com o caminho correto para o arquivo onde a classe é declarada. Além disso, 

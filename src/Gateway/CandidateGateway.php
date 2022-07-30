@@ -4,14 +4,11 @@
  */
 class CandidateGateway {
 
-  /**
-   * Conector com o banco de dados, usado para envio de queries
-   */
-  private $db;
+  private $db;    /**< Conector com o banco de dados, usado para envio de queries */
 
   /**
    * Construtor da Classe
-   * @param db Instância de DatabaseConnector
+   * @param db Conexão com o banco de dados
    */
   public function __construct($db) {
     $this->db = $db;
@@ -34,7 +31,7 @@ class CandidateGateway {
 
   /**
    * Método que computa um voto para um dado candidato a partir de input.
-   * @param input array com campos 'code' e 'tipo', contendo o código do candidato e o tipo da votação (vereador ou prefeito)
+   * @param input Array com campos 'code' e 'tipo', contendo o código do candidato e o tipo da votação (vereador ou prefeito)
    */
   public function vote($input) {
     $statement = "UPDATE candidatos SET votos = votos + 1 WHERE Codigo = :code AND Tipo = :tipo";

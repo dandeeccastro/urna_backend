@@ -1,33 +1,22 @@
 <?php 
 /**
- * Classe de controle da entidade de Candidato
+ * Classe de controle da entidade de Candidato, responsável por lidar com requisições HTTP.
+ * Como estamos lidando com uma entidade somente no banco de dados, a controller recebe a 
+ * responsabilidade de parsear todas as requisições.
  */
 class CandidateController {
-  /**
-   * Conexão com o banco de dados
-   */
-  private $db;
+
+  private $db; /**< Conector com o banco de dados */
+  private $method; /**< Método HTTP da requisição recebida pela controller */
+  private $uri; /**< URI da requisição recebida pela controller */
+  private $gateway; /**< Gateway de acesso aos dados de Candidatos */
 
   /**
-   * Método da requisição recebida pela controller
-   */
-  private $method;
-
-  /**
-   * URI da requisição recebida pela controller
-   */
-  private $uri;
-
-  /**
-   * Instância de CandidateGateway
-   */
-  private $gateway;
-
-  /**
-   * Construtor da classe
-   * @param db Conector do banco de dados
-   * @param method Método usado na requisição à API
-   * @param uri URI da requisição à API
+   * Construtor da classe.
+   * Instancia um CandidateGateway usando o conector de banco de dados.
+   * @param db Conector com o banco de dados
+   * @param method Método HTTP da requisição recebida pela controller
+   * @param uri Gateway de acesso aos dados de Candidatos
    */
   public function __construct($db, $method, $uri) {
     $this->db = $db;
@@ -38,9 +27,9 @@ class CandidateController {
   }
 
   /**
-   * Método de parsear a requisição à API
+   * Método de parsear a requisição à API.
    * Verifica o método recebido e a URI, e caso a rota esteja definida, a resposta é gerada com o método necessário.
-   * Em caso da rota não existir, retorna 404
+   * Em caso da rota não existir, retorna 404.
    */
   public function parse_request() {
     switch ($this->method) {
@@ -68,8 +57,8 @@ class CandidateController {
   }
 
   /**
-   * Método para pegar as etapas da eleição
-   * Pega os candidatos do banco de dados usando o gateway e monta a resposta da requisição
+   * Método para pegar as etapas da eleição.
+   * Pega os candidatos do banco de dados usando o gateway e monta a resposta da requisição.
    */
   private function get_etapas() {
     $result = $this->gateway->all();
@@ -80,9 +69,9 @@ class CandidateController {
   }
 
   /**
-   * Método para computar um voto na eleição
+   * Método para computar um voto na eleição.
    * Usa o corpo da requisição POST para pegar os parâmetros, define os códigos reservados para votos nulos e brancos quando necessário e 
-   * envia o voto usando o gateway, retornando um código de resultado
+   * envia o voto usando o gateway, retornando um código de resultado.
    */
   private function vote() {
     $input = (array) json_decode(file_get_contents('php://input'), TRUE);
@@ -98,8 +87,8 @@ class CandidateController {
   }
 
   /**
-   * Método para pegar os resultados da eleição
-   * Pega os resultados do BD usando o gateway e monta a resposta da requisição
+   * Método para pegar os resultados da eleição.
+   * Pega os resultados do BD usando o gateway e monta a resposta da requisição.
    */
   private function results() {
     $result = $this->gateway->all();
@@ -110,7 +99,8 @@ class CandidateController {
   }
 
   /**
-   * Método para gerar códigos de erro
+   * Método para gerar códigos de erro, usado quando não é possível encontrar uma URI válida no
+   * parsing da requisição.
    * @param code Código de erro do HTTP
    * @param message Mensagem de erro
    */
@@ -121,9 +111,9 @@ class CandidateController {
   }
 
   /**
-   * Método para formatar resultados da eleição no JSON de etapas
+   * Método para formatar resultados da eleição no JSON de etapas.
    * @param candidates Candidatos retornados do gateway
-   * Formata os resultados para um array com o formato necessário para as eleições no frontend
+   * Formata os resultados para um array com o formato necessário para as eleições no frontend.
    */
   private function format_etapas($candidates) {
     $result = array(
@@ -164,9 +154,9 @@ class CandidateController {
   }
 
   /**
-   * Método para gerar resutlados da eleição
+   * Método para gerar resutlados da eleição.
    * @param candidates Candidatos retornados do gateway
-   * Formata o resultado para ser depois usado na tabela de resultados
+   * Formata o resultado para ser depois usado na tabela de resultados.
    */
   private function format_results($candidates) {
     $result = array();
@@ -185,6 +175,10 @@ class CandidateController {
     return $result;
   }
 
+  /**
+   * Método para reiniciar a eleição.
+   * Usa o gateway para zerar os votos na tabela de candidatos.
+   */
   private function reset_votes() {
     $result = $this->gateway->reset_votes();
     $response['status'] = 'HTTP/1.1 200 OK';

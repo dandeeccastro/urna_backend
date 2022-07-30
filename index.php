@@ -1,4 +1,9 @@
 <?php
+/** \mainpage Urna Backend
+ * 
+ * Projeto de implementação de uma API de eleições para contabilização de votos
+ * 
+ */
 include_once __DIR__ . '/autoload.php';
 
 header("Access-Control-Allow-Origin: *");

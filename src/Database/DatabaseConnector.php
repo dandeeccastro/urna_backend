@@ -11,11 +11,12 @@ class DatabaseConnector {
     * Cria a conexão no banco de dados usando parâmetros previamente estabelecidos. Em caso de erro, retorna a mensagem de erro.
     */
    public function __construct() {
-      $host = '127.0.0.1';
+     $url = parse_url(getenv('CLEARDB_DATABASE_URL'))
+      $host = $url['host'];
       $port = 3306;
-      $database = 'eleicoes';
-      $username = 'urna';
-      $password = 'eleicoes2022';
+      $database = substr($url['path'],1);
+      $username = $url['user'];
+      $password = $url['pass'];
 
       try {
          $this->dbConnection = new \PDO(
